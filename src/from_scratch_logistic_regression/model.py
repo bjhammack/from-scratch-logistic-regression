@@ -28,7 +28,7 @@ class Model:
         self.Y = Y
         self.split = split
 
-        if data_location:
+        if data_location and not X:
             self.prep_data(data_location)
 
     def prep_data(self, loc: str):
@@ -38,8 +38,7 @@ class Model:
         Args:
         loc -- String; directory of parent folder holding both image folders
         '''
-        images, labels = dh.get_images(loc)
-        images = dh.clean_images(images)
+        images, labels = dh.get_images(loc, size=(200,200))
         self.X, self.Y = dh.stage_images(images, labels)
 
     def initialize_params(self, dim):
