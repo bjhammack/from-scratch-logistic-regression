@@ -1,6 +1,7 @@
 from copy import deepcopy
 import data_handler as dh
 from logistic_functions import propagate, sigmoid
+from math import ceil
 import numpy as np
 from numpy.typing import ArrayLike
 from typing import Dict, Tuple, List
@@ -31,6 +32,8 @@ class Model:
         if data_location and not X:
             self.prep_data(data_location)
 
+        self.X_train, self.X_test, self.Y_train, self.Y_test
+
     def prep_data(self, loc: str):
         '''
         Prepares images for modeling by getting, cleaning, and staging.
@@ -38,8 +41,22 @@ class Model:
         Args:
         loc -- String; directory of parent folder holding both image folders
         '''
-        images, labels = dh.get_images(loc, size=(200,200))
+        images, labels = dh.get_images(loc, size=(100,100))
         self.X, self.Y = dh.stage_images(images, labels)
+
+    def train_test_split(X, Y, split):
+        total_size = X.shape[0]
+        train_size = ceil(total_size * split)
+        test_size = total_size - train_size
+
+        X_train = X[:train_size]
+        Y_train = Y[:train_size]
+        X_test = X[train_size:]
+        Y_test = Y[train_size:]
+
+        assert len(X_train) + len(X_test) == total_size
+
+        return X_train, Y_train, X_test, Y_test
 
     def initialize_params(self, dim):
         '''
@@ -130,10 +147,9 @@ class Model:
 
     def model(
             self,
-            X_train: ArrayLike,
-            Y_train: ArrayLike,
-            X_test: ArrayLike,
-            Y_test: ArrayLike,
+            X: ArrayLike,
+            Y: ArrayLike,
+            split: float=0.8,
             iterations: int=1000,
             learning_rate: float=0.1,
             verbose: bool=False,
@@ -142,9 +158,9 @@ class Model:
         Predicts the label of given samples.
 
         Args:
-        X_train/X_test -- numpy array of size (n, m), where n = feature size 
-        and m = samples
-        Y_train/Y_test -- numpy array of size (1, m); contains the test and train labels
+        X -- numpy array of size (n, m), where n = feature size and m = samples
+        Y -- numpy array of size (1, m); contains the test and train labels
+        split -- float; indicated how big you want the training sample to be
         iterations -- int; number of loops to optimize w and b
         learning_rate -- float; the degree to which the gradient descent will update
         verbose -- bool; prints details of progress of optimization when True
@@ -152,6 +168,8 @@ class Model:
         Return:
         metadata -- dictionary containing information on the model
         '''
+        X_train, Y_train, X_test, Y_test = self.train_test_split(X, Y, split)
+
         w, b = self.initialize_params(X_train.shape[0])
         params, _, costs = self.optimize(X_train, Y_train, w, b, iterations,
                                          learning_rate, verbose)
