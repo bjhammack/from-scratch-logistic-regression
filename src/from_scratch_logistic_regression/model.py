@@ -1,4 +1,5 @@
 from copy import deepcopy
+import data_handler as dh
 from logistic_functions import propagate, sigmoid
 import numpy as np
 from numpy.typing import ArrayLike
@@ -7,11 +8,39 @@ from typing import Dict, Tuple, List
 
 class Model:
     def __init__(self,
-            X: ArrayLike,
-            Y: ArrayLike,
+            X: ArrayLike=None,
+            Y: ArrayLike=None,
             split: float=0.8,
+            data_location: str='/data/images/',
             ):
+        '''
+        Class initializes a model, along with its functions, and preps data for modeling.
+
+        Args:
+        X -- numpy array of size (n, m) or None
+        Y -- numpy array of size (m, 1) or None
+        split -- float; determines the train/test split
+        data_location -- string; if specified, points to the location of the data
+            Note: stored images must be subfolders inside specified folder, with
+            the name of their subfolders the label they should have.
+        '''
         self.X = X
+        self.Y = Y
+        self.split = split
+
+        if data_location:
+            self.prep_data(data_location)
+
+    def prep_data(self, loc: str):
+        '''
+        Prepares images for modeling by getting, cleaning, and staging.
+
+        Args:
+        loc -- String; directory of parent folder holding both image folders
+        '''
+        images, labels = dh.get_images(loc)
+        images = dh.clean_images(images)
+        self.X, self.Y = dh.stage_images(images, labels)
 
     def initialize_params(self, dim):
         '''
@@ -125,8 +154,8 @@ class Model:
         metadata -- dictionary containing information on the model
         '''
         w, b = self.initialize_params(X_train.shape[0])
-        params, grads, costs = self.optimize(X_train, Y_train, w, b, iterations,
-                                             learning_rate, verbose)
+        params, _, costs = self.optimize(X_train, Y_train, w, b, iterations,
+                                         learning_rate, verbose)
         w = params['w']
         b = params['b']
         Y_hat_test = self.predict(X_test, w, b)
