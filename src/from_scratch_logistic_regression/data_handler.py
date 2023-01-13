@@ -35,8 +35,19 @@ def get_images(parent_dir: str, size: Tuple[int, int]
     return images, labels
 
 
-def stage_images(images, labels):
+def stage_images(X: ArrayLike, Y: ArrayLike) -> Tuple[ArrayLike, ArrayLike]:
     '''
-    Shuffles the data and flattens the images in preperation for modeling.
+    Flattens, standardizes, and shuffles the images in preperation for modeling.
     '''
-    images_flat = images.reshape(images.shape[0], -1).T
+    X_flat = X.reshape(X.shape[0], -1).T
+    X_standard = X_flat / 255.
+    X_shuffle, Y_shuffle = _shuffle_X_Y(X_standard, Y)
+    return X_shuffle, Y_shuffle
+
+
+def _shuffle_X_Y(X: ArrayLike, Y: ArrayLike) -> Tuple[ArrayLike, ArrayLike]:
+    '''
+    '''
+    assert len(X) == len(Y)
+    permutation = np.random.permutation(len(X))
+    return X[permutation], Y[permutation]
