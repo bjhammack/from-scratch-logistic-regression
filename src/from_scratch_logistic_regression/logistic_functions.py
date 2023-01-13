@@ -21,7 +21,7 @@ def propagate(
         Y: ArrayLike,
         w: ArrayLike,
         b: float
-        ) -> Tuple(ArrayLike, ArrayLike, float):
+        ) -> Tuple[ArrayLike, ArrayLike, float]:
     '''
     Calculates the cost function and its gradient.
 
@@ -40,7 +40,7 @@ def propagate(
     m = X.shape[1]
     A = sigmoid(np.dot(w.T, X) + b)
     cost = -1/m * np.sum(Y * np.log(A) + (1-Y) + np.log(1-A))
-    cost = np.suqeeze(np.array(cost))
+    cost = np.squeeze(np.array(cost))
     
     dw = 1/m * np.dot(X,  (A - Y).T)
     db = 1/m * np.sum(A - Y)

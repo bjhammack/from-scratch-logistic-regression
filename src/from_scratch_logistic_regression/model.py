@@ -12,7 +12,7 @@ class Model:
             X: ArrayLike=None,
             Y: ArrayLike=None,
             split: float=0.8,
-            data_location: str='/data/images/',
+            data_location: str='data/images/',
             ):
         '''
         Class initializes a model, along with its functions, and preps data
@@ -32,9 +32,7 @@ class Model:
 
         if data_location and not X:
             self.prep_data(data_location)
-
-        self.X_train, self.X_test, self.Y_train, self.Y_test
-
+        
     def prep_data(self, loc: str):
         '''
         Prepares images for modeling by getting, cleaning, and staging.
@@ -45,7 +43,7 @@ class Model:
         images, labels = dh.get_images(loc, size=(100,100))
         self.X, self.Y = dh.stage_images(images, labels)
 
-    def train_test_split(X: ArrayLike, Y: ArrayLike, split: float=0.8
+    def train_test_split(self, X: ArrayLike, Y: ArrayLike, split: float=0.8
             ) -> Tuple[ArrayLike, ArrayLike, ArrayLike, ArrayLike]:
         '''
         Splits pre-shuffled X and Y arrays based on the split value.
@@ -60,7 +58,6 @@ class Model:
         '''
         total_size = X.shape[0]
         train_size = ceil(total_size * split)
-        test_size = total_size - train_size
 
         X_train = X[:train_size]
         Y_train = Y[:train_size]
@@ -120,16 +117,15 @@ class Model:
         
         costs = []
         for i in range(iterations):
-            gradients, cost = propagate(X, Y, w, b)
+            cost, gradients = propagate(X, Y, w, b)
             dw = gradients['dw']
             db = gradients['db']
             w = w - (learning_rate * dw)
             b = b - (learning_rate * db)
 
-            if i % 100 == 0:
+            if i+1 % 100 == 0:
                 costs.append(cost)
-                if verbose:
-                    print(f'Iteration {i}: {cost}')
+                if verbose: print(f'Iteration {i+1}: {cost}')
 
         parameters = {'w': w, 'b': b}
         gradients = {'dw': dw, 'db': db}
@@ -164,7 +160,7 @@ class Model:
             Y: ArrayLike,
             split: float=0.8,
             iterations: int=1000,
-            learning_rate: float=0.1,
+            learning_rate: float=0.5,
             verbose: bool=False,
             ) -> Dict[str, ArrayLike | List[float] | float | int]:
         '''
@@ -181,13 +177,19 @@ class Model:
         Return:
         metadata -- dictionary containing information on the model
         '''
+        if verbose: print(f'Splitting data into {split:.0%} training and {1-split:.0%} test sets.')
         X_train, Y_train, X_test, Y_test = self.train_test_split(X, Y, split)
 
         w, b = self.initialize_params(X_train.shape[0])
+        if verbose: print(
+            f'Optimizing weights and bias for {iterations} iterations and a '
+            f'learning rate of {learning_rate}.')
         params, _, costs = self.optimize(X_train, Y_train, w, b, iterations,
                                          learning_rate, verbose)
         w = params['w']
         b = params['b']
+        
+        if verbose: print('Predicting test data.')
         Y_hat_test = self.predict(X_test, w, b)
         Y_hat_train = self.predict(X_train, w, b)
 

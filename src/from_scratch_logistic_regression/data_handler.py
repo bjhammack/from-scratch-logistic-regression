@@ -25,7 +25,7 @@ def get_images(parent_dir: str, size: Tuple[int, int]
     labels = []
     for label in label_names:
         for file in glob(parent_dir+f'/{label}/*'):
-            image = np.asarray(Image.open(file).resize(size))
+            image = np.asarray(Image.open(file).resize(size).convert('RGB'))
             images.append(image)
             labels.append(1 if label == label_names[0] else 0)
 
@@ -50,6 +50,7 @@ def stage_images(X: ArrayLike, Y: ArrayLike) -> Tuple[ArrayLike, ArrayLike]:
     X_flat = X.reshape(X.shape[0], -1).T
     X_standard = X_flat / 255.
     X_shuffle, Y_shuffle = _shuffle_X_Y(X_standard, Y)
+
     return X_shuffle, Y_shuffle
 
 
@@ -64,6 +65,6 @@ def _shuffle_X_Y(X: ArrayLike, Y: ArrayLike) -> Tuple[ArrayLike, ArrayLike]:
     Return:
     X[permutation], Y[permutation] -- X and Y after using a np.random.perm to shuffle
     '''
-    assert len(X) == len(Y)
-    permutation = np.random.permutation(len(X))
-    return X[permutation], Y[permutation]
+    assert X.shape[1] == Y.shape[1]
+    permutation = np.random.permutation(X.shape[1])
+    return X[:, permutation], Y[:, permutation]
