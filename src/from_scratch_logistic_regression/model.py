@@ -15,7 +15,8 @@ class Model:
             data_location: str='/data/images/',
             ):
         '''
-        Class initializes a model, along with its functions, and preps data for modeling.
+        Class initializes a model, along with its functions, and preps data
+        for modeling.
 
         Args:
         X -- numpy array of size (n, m) or None
@@ -44,7 +45,19 @@ class Model:
         images, labels = dh.get_images(loc, size=(100,100))
         self.X, self.Y = dh.stage_images(images, labels)
 
-    def train_test_split(X, Y, split):
+    def train_test_split(X: ArrayLike, Y: ArrayLike, split: float=0.8
+            ) -> Tuple[ArrayLike, ArrayLike, ArrayLike, ArrayLike]:
+        '''
+        Splits pre-shuffled X and Y arrays based on the split value.
+
+        Args:
+        X -- numpy array of size (n, m)
+        Y -- numpy array of size (1, m)
+        split -- float; signifies the percentage size of the train set
+
+        Return:
+        X_train, Y_train, X_test, Y_test
+        '''
         total_size = X.shape[0]
         train_size = ceil(total_size * split)
         test_size = total_size - train_size
@@ -58,7 +71,7 @@ class Model:
 
         return X_train, Y_train, X_test, Y_test
 
-    def initialize_params(self, dim):
+    def initialize_params(self, dim: int) -> Tuple[ArrayLike, float]:
         '''
         Initializes weights (w) as a numpy array of zeros (dim, 1) and bias (b)
         as 0.

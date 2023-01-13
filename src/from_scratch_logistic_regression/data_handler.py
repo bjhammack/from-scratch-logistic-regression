@@ -38,6 +38,14 @@ def get_images(parent_dir: str, size: Tuple[int, int]
 def stage_images(X: ArrayLike, Y: ArrayLike) -> Tuple[ArrayLike, ArrayLike]:
     '''
     Flattens, standardizes, and shuffles the images in preperation for modeling.
+
+    Args:
+    X -- numpy array of size (n, m)
+    Y -- numpy array of size (1, m)
+
+    Return:
+    X_shuffle -- X after being flattened, standardized, and shuffled
+    Y_shuffle -- Y after being flattened, standardized, and shuffled
     '''
     X_flat = X.reshape(X.shape[0], -1).T
     X_standard = X_flat / 255.
@@ -47,6 +55,14 @@ def stage_images(X: ArrayLike, Y: ArrayLike) -> Tuple[ArrayLike, ArrayLike]:
 
 def _shuffle_X_Y(X: ArrayLike, Y: ArrayLike) -> Tuple[ArrayLike, ArrayLike]:
     '''
+    Shuffles two numpy arrays if they are of the same length.
+
+    Args:
+    X -- numpy array of size (n, m)
+    Y -- numpy array of size (1, m)
+
+    Return:
+    X[permutation], Y[permutation] -- X and Y after using a np.random.perm to shuffle
     '''
     assert len(X) == len(Y)
     permutation = np.random.permutation(len(X))
