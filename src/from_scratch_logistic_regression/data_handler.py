@@ -4,6 +4,7 @@ from numpy.typing import ArrayLike
 from PIL import Image
 from typing import Tuple
 
+
 def get_images(parent_dir: str, size: Tuple[int, int]
         ) -> Tuple[ArrayLike, ArrayLike]:
     '''
