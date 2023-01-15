@@ -21,7 +21,10 @@ The data ([source](https://www.kaggle.com/datasets/samuelcortinhas/muffin-vs-chi
 - Chihuahua's - 3,196 images
 - Muffin's - 2,717 images
 
-![example-chihuahua](/images/example_chihuahua.jpg) ![example-muffin](/images/example_muffin.jpg)
+<img src="/images/example_chihuahua.jpg" width=100 height=100>
+<img src="/images/example_muffin.jpg" width=100 height=100>
+<!-- ![example-chihuahua](/images/example_chihuahua.jpg)
+![example-muffin](/images/example_muffin.jpg) -->
 
 
 ## The Pipeline
@@ -71,6 +74,6 @@ For the sake of show-and-tell, a sample run was performed, below are the results
 ## Writeup
 Given the simplicity of this logisitic regression model, the questionable quality of the selected dataset, and the use of the sigmoid function for activation (at the very least maybe tanh should be used instead) I'm somewhat impressed with the results. In particular, I'm satisfied with how it has avoided extreme overfitting, which would have been recognized if there was a very large disparity between the train and test accuracies.
 
-Chihuahuas' made up 54% of the images, so a truly awful model would have just chosen all Chihuahuas and seen an accuracy of ~54%. This means, at the very least, we can say that this model is better than both a random guess and picking only the class with the largest dataset.
+Chihuahuas' made up 54% of the images, so a truly awful model would have just chosen all Chihuahuas and seen an accuracy of ~54%. This means, at the very least, we can say that this model performs at least 10% better than both a random guess and picking only the class with the largest dataset.
 
 As a model, this project works, but stinks. As a proof of concept of a from scratch logistic regression model, I think it did pretty good.
