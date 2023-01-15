@@ -21,8 +21,9 @@ The data ([source](https://www.kaggle.com/datasets/samuelcortinhas/muffin-vs-chi
 - Chihuahua's - 3,196 images
 - Muffin's - 2,717 images
 
-<img src="/images/example_chihuahua.jpg" width=100 height=100>
-<img src="/images/example_muffin.jpg" width=100 height=100>
+| Example Chihuahua | Example Muffin |
+| ----------------- | -------------- |
+| <img src="/images/example_chihuahua.jpg" width=100 height=100> | <img src="/images/example_muffin.jpg" width=100 height=100> |
 <!-- ![example-chihuahua](/images/example_chihuahua.jpg)
 ![example-muffin](/images/example_muffin.jpg) -->
 
