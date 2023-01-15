@@ -2,6 +2,7 @@ import numpy as np
 from numpy.typing import ArrayLike
 from typing import Tuple
 
+
 def sigmoid(z: float | ArrayLike) -> float | ArrayLike:
     '''
     Computes the sigmoid of z
@@ -13,6 +14,8 @@ def sigmoid(z: float | ArrayLike) -> float | ArrayLike:
     sigmoid -- the sigmoid of z
     '''
     sigmoid = 1/(1 + np.exp(-1 * z))
+    sigmoid = np.where(sigmoid == 1., 9999999999e-10, sigmoid)
+    sigmoid = np.where(sigmoid == 0., 1e-10, sigmoid)
     return sigmoid
 
 
@@ -39,6 +42,7 @@ def propagate(
     '''
     m = X.shape[1]
     A = sigmoid(np.dot(w.T, X) + b)
+
     cost = -1/m * np.sum(Y * np.log(A) + (1-Y) + np.log(1-A))
     cost = np.squeeze(np.array(cost))
     

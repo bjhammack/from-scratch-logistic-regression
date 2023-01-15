@@ -11,8 +11,7 @@ class Model:
     def __init__(self,
             X: ArrayLike=None,
             Y: ArrayLike=None,
-            split: float=0.8,
-            data_location: str='data/images/',
+            data_dir: str='data/images/',
             ):
         '''
         Class initializes a model, along with its functions, and preps data
@@ -22,16 +21,15 @@ class Model:
         X -- numpy array of size (n, m) or None
         Y -- numpy array of size (m, 1) or None
         split -- float; determines the train/test split
-        data_location -- string; if specified, points to the location of the data
+        data_dir -- string; if specified, points to the location of the data
             Note: stored images must be subfolders inside specified folder, with
             the name of their subfolders the label they should have.
         '''
         self.X = X
         self.Y = Y
-        self.split = split
 
-        if data_location and not X:
-            self.prep_data(data_location)
+        if data_dir and not X:
+            self.prep_data(data_dir)
         
     def prep_data(self, loc: str):
         '''
@@ -56,15 +54,15 @@ class Model:
         Return:
         X_train, Y_train, X_test, Y_test
         '''
-        total_size = X.shape[0]
+        total_size = X.shape[1]
         train_size = ceil(total_size * split)
 
-        X_train = X[:train_size]
-        Y_train = Y[:train_size]
-        X_test = X[train_size:]
-        Y_test = Y[train_size:]
+        X_train = X[:, :train_size]
+        Y_train = Y[:, :train_size]
+        X_test = X[:, train_size:]
+        Y_test = Y[:, train_size:]
 
-        assert len(X_train) + len(X_test) == total_size
+        assert X_train.shape[1] + X_test.shape[1] == total_size
 
         return X_train, Y_train, X_test, Y_test
 
@@ -80,8 +78,7 @@ class Model:
         w -- weights in array of the shape (dim, 1)
         b -- bias initialized to 0
         '''
-
-        w = np.zeros((dim, 1))
+        w = np.zeros((dim, 1), np.float64)
         b = 0.0
         return w, b
 
@@ -123,9 +120,9 @@ class Model:
             w = w - (learning_rate * dw)
             b = b - (learning_rate * db)
 
-            if i+1 % 100 == 0:
+            if i % 100 == 0:
                 costs.append(cost)
-                if verbose: print(f'Iteration {i+1}: {cost}')
+                if verbose: print(f'Iteration {i}: {cost}')
 
         parameters = {'w': w, 'b': b}
         gradients = {'dw': dw, 'db': db}
@@ -182,14 +179,14 @@ class Model:
 
         w, b = self.initialize_params(X_train.shape[0])
         if verbose: print(
-            f'Optimizing weights and bias for {iterations} iterations and a '
+            f'\nOptimizing weights and bias for {iterations} iterations and a '
             f'learning rate of {learning_rate}.')
         params, _, costs = self.optimize(X_train, Y_train, w, b, iterations,
                                          learning_rate, verbose)
         w = params['w']
         b = params['b']
         
-        if verbose: print('Predicting test data.')
+        if verbose: print('\nPredicting test data.')
         Y_hat_test = self.predict(X_test, w, b)
         Y_hat_train = self.predict(X_train, w, b)
 
